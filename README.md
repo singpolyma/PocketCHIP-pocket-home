@@ -42,18 +42,24 @@ Note: The previous commands need to be typed once, then, upgrading is easy and i
      sudo apt-get install \
      git \
      build-essential \
+     pkg-config \
      libasound2-dev \
-     libx11-dev \
-     libxrandr-dev \
-     libxcursor-dev \
-     libxft-dev \
-     libxinerama-dev \
-     libnm-glib-dev \
-     network-manager-dev \
+     libcurl3-dev \
+     libflac-dev \
+     libfreetype6-dev \
+     libgl1-mesa-dev \
      libi2c-dev \
+     libjpeg-dev \
+     libjuce-dev \
+     libnm-glib-dev \
+     libpng-dev \
      libssl-dev \
-     libnm-gtk-dev
-
+     libvorbis-dev \
+     libx11-dev \
+     libxcursor-dev \
+     libxinerama-dev \
+     libxrandr-dev \
+     network-manager-dev
 
 ####  2. Cloning and building
       
