@@ -213,40 +213,31 @@ void AppsPageComponent::startApp(AppIconButton* appButton) {
   }
 };
 
-void AppsPageComponent::focusApp(AppIconButton* appButton, const String& windowId) {
-  DBG("AppsPageComponent::focusApp - " << appButton->shell);
-  String focusShell = "echo 'focus_client_by_window_id("+windowId+")' | awesome-client";
-  StringArray focusCmd{"sh", "-c", focusShell.toRawUTF8()};
-  ChildProcess focusWindow;
-  focusWindow.start(focusCmd);
-};
-
 void AppsPageComponent::startOrFocusApp(AppIconButton* appButton) {
   if (debounce) return;
   
   bool shouldStart = true;
   int appIdx = runningAppsByButton[appButton];
   bool hasLaunched = runningApps[appIdx] != nullptr;
-  String windowId;
   
   if(hasLaunched) {
     const auto shellWords = split(appButton->shell, " ");
     const auto& cmdName = shellWords[0];
-    StringArray findCmd{"xdotool", "search", "--all", "--limit", "1", "--class", cmdName.toRawUTF8()};
-    ChildProcess findWindow;
-    findWindow.start(findCmd);
-    findWindow.waitForProcessToFinish(1000);
-    windowId = findWindow.readAllProcessOutput().trimEnd();
+    // JUCE waitForProcessToFinish is not compatible with getExitCode for now
+    // so we use this shell hack to get the exit code
+    String raiseShell = "wmctrl -xa" + cmdName + "; echo $?";
+    StringArray raiseCmd{"sh", "-c", raiseShell.toRawUTF8()};
+    ChildProcess raiseWindow;
+    raiseWindow.start(raiseCmd);
+    raiseWindow.waitForProcessToFinish(1000);
+    String exitCode = raiseWindow.readAllProcessOutput().trimEnd();
     
-    // does xdotool find a window id? if so, we shouldn't start a new one
-    shouldStart = (windowId.length() > 0) ? false : true;
+    // If wmctrl fails to raise, then we should start
+    shouldStart = exitCode != "0";
   }
   
   if (shouldStart) {
     startApp(appButton);
-  }
-  else {
-    focusApp(appButton, windowId);
   }
   
 };
