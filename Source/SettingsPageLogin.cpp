@@ -1,3 +1,4 @@
+#ifndef WITHOUT_LOGIN
 #include "SettingsPageLogin.h"
 
 SettingsPageLogin::SettingsPageLogin() :
@@ -287,3 +288,4 @@ void SettingsPageLogin::buttonClicked(Button* button){
     else deletePassword();
   }
 }
+#endif

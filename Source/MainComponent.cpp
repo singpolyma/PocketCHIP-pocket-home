@@ -11,20 +11,22 @@ MainContentComponent::MainContentComponent(const var &configJson)
 {
   lookAndFeel = new PokeLookAndFeel();
   setLookAndFeel(lookAndFeel);
+  pageStack = new PageStackComponent();
 
+#ifndef WITHOUT_LOGIN
   //Function to execute when the login button is pressed on login page
   auto function = [this] () { this->loggedIn(); };
   lp = new LoginPage(function);
+
+  if(lp->hasPassword()) {
+    addAndMakeVisible(lp);
+    lp->textFocus();
+  } else
+#endif
+    addAndMakeVisible(pageStack);
+
   LookAndFeel::setDefaultLookAndFeel(lookAndFeel);
 
-  pageStack = new PageStackComponent();
-  
-  if(lp->hasPassword())
-    addAndMakeVisible(lp);
-  else
-    addAndMakeVisible(pageStack);  
-  lp->textFocus();
-  
   launcher = new LauncherComponent(configJson);
   pageStack->pushPage(launcher, PageStackComponent::kTransitionNone);
 
@@ -32,7 +34,9 @@ MainContentComponent::MainContentComponent(const var &configJson)
 }
 
 void MainContentComponent::loggedIn(){
+#ifndef WITHOUT_LOGIN
   removeChildComponent(lp);
+#endif
   addAndMakeVisible(pageStack);
 }
 
@@ -45,12 +49,16 @@ void MainContentComponent::paint(Graphics &g) {
 void MainContentComponent::resized() {
   auto bounds = getLocalBounds();
   pageStack->setBounds(bounds);
+#ifndef WITHOUT_LOGIN
   lp->setBounds(bounds);
+#endif
 }
 
 void MainContentComponent::handleMainWindowInactive() {
   launcher->hideLaunchSpinner();
 }
+
+#ifndef WITHOUT_LOGIN
 
 bool LoginPage::hasPassword(){
   label_password->setVisible(false);
@@ -148,3 +156,5 @@ void LoginPage::textEditorReturnKeyPressed(TextEditor& te){
 void LoginPage::paint(Graphics &g) {
   g.fillAll(Colours::white);
 }
+
+#endif

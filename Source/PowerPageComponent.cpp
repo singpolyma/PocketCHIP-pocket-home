@@ -30,10 +30,12 @@ PowerPageComponent::PowerPageComponent() {
   ChildProcess child{};
   
   felPage = new PowerFelPageComponent();
-  
+
+#ifndef WITHOUT_LOGIN
   //Setting up the lockscreen
   auto lambda = [this](){ this->hideLockscreen(); };
   lockscreen = new LoginPage(lambda);
+#endif
   
   // create back button
   backButton = createImageButton(
@@ -122,7 +124,9 @@ PowerPageComponent::PowerPageComponent() {
 PowerPageComponent::~PowerPageComponent() {}
 
 void PowerPageComponent::hideLockscreen(){
+#ifndef WITHOUT_LOGIN
     removeChildComponent(lockscreen);
+#endif
     //Let's go back to the homescreen
     getMainStack().popPage(PageStackComponent::kTransitionNone);    
 }
@@ -173,6 +177,7 @@ void PowerPageComponent::resized() {
 }
 
 void PowerPageComponent::setSleep() {
+#ifndef WITHOUT_LOGIN
     #if JUCE_LINUX
     StringArray cmd{ "xset","q","|","grep","is O" };
     if(child.start(cmd)) {
@@ -189,6 +194,7 @@ void PowerPageComponent::setSleep() {
         }
     }
   #endif
+#endif
 }
 
 void PowerPageComponent::showPowerSpinner() {
