@@ -54,7 +54,9 @@ private:
   String bgImagePath;
   ChildProcess child;
 
+#ifndef WITHOUT_LOGIN
   //Lockscreen to display when the screen goes sleeping
   ScopedPointer<LoginPage> lockscreen;
+#endif
 };
 

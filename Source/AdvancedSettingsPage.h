@@ -39,7 +39,9 @@ private:
   TextButton personalizeButton;
   TextButton dateandtime;
   TextButton inputoptions;
+#ifndef WITHOUT_LOGIN
   ScopedPointer<SettingsPageLogin> spl;
+#endif
   ScopedPointer<PersonalizePageComponent> ppc;
   ScopedPointer<DateTimePage> datetime;
   ScopedPointer<InputSettingsPage> inputsettings;

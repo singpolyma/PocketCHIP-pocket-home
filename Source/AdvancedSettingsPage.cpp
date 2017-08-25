@@ -8,7 +8,9 @@ removeLogin("Remove your password"),
 personalizeButton("Personalize your homepage"),
 dateandtime("Date and time"),
 inputoptions("Input settings"),
+#ifndef WITHOUT_LOGIN
 spl(new SettingsPageLogin),
+#endif
 datetime(new DateTimePage(lc)),
 ppc(new PersonalizePageComponent(lc)),
 inputsettings(new InputSettingsPage(lc)),
@@ -29,16 +31,20 @@ index(0)
   inputoptions.addListener(this);
   addAndMakeVisible(title);
   addAndMakeVisible(backButton);
+#ifndef WITHOUT_LOGIN
   addAndMakeVisible(addLogin);
   addAndMakeVisible(removeLogin);
+#endif
   addAndMakeVisible(personalizeButton);
   addAndMakeVisible(dateandtime);
   addAndMakeVisible(inputoptions);
   
   //Adding to our buttons
   allbuttons.push_back(&personalizeButton);
+#ifndef WITHOUT_LOGIN
   allbuttons.push_back(&addLogin);
   allbuttons.push_back(&removeLogin);
+#endif
   allbuttons.push_back(&dateandtime);
   allbuttons.push_back(&inputoptions);
   
@@ -113,6 +119,7 @@ AlertWindow::showMessageBoxAsync(AlertWindow::AlertIconType::WarningIcon,
 void AdvancedSettingsPage::buttonClicked(Button* button){
   if (button == backButton)
     getMainStack().popPage(PageStackComponent::kTransitionTranslateHorizontal);
+#ifndef WITHOUT_LOGIN
   else if(button == &addLogin){
     spl->switchToModify();
     getMainStack().pushPage(spl, PageStackComponent::kTransitionTranslateHorizontal);
@@ -124,6 +131,7 @@ void AdvancedSettingsPage::buttonClicked(Button* button){
     }
     else displayNoPassword();
   }
+#endif
   else if(button == &personalizeButton)
     getMainStack().pushPage(ppc, PageStackComponent::kTransitionTranslateHorizontal);
   else if(button == &(*nextarrow)){

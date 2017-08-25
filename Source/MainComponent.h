@@ -4,6 +4,8 @@
 
 #include "LauncherComponent.h"
 #include "PageStackComponent.h"
+
+#ifndef WITHOUT_LOGIN
 #include "SettingsPageLogin.h"
 
 class MainContentComponent;
@@ -33,6 +35,7 @@ private:
   ScopedPointer<DrawableImage> ntcIcon;
   ScopedPointer<TextEditor> cur_password;
 };
+#endif
 
 class MainContentComponent : public Component {
 public:
@@ -52,5 +55,8 @@ public:
 
 private:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
+
+#ifndef WITHOUT_LOGIN
   ScopedPointer<LoginPage> lp;
+#endif
 };

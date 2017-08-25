@@ -1,3 +1,4 @@
+#ifndef WITHOUT_LOGIN
 #ifndef SETTINGSPAGELOGIN_H
 #define SETTINGSPAGELOGIN_H
 
@@ -64,4 +65,5 @@ private:
   TextButton apply;
 };
 
+#endif
 #endif
