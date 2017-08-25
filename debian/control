@@ -12,6 +12,6 @@ Homepage: http://opensource.nextthing.co
 Package: pocket-home
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: network-manager
+Recommends: network-manager, wmctrl
 Description: home screen for PocketCHIP
  It can launch programs and change system settings

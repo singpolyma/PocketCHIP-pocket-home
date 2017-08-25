@@ -141,7 +141,6 @@ private:
 
   void onTrash(Button*);
   void startApp(AppIconButton* appButton);
-  void focusApp(AppIconButton* appButton, const String& windowId);
   void startOrFocusApp(AppIconButton* appButton);
   void openAppsLibrary();
   void updateIcon(AppIconButton*, EditWindow*);
