@@ -348,7 +348,7 @@ void SettingsPageComponent::buttonClicked(Button *button) {
 void SettingsPageComponent::setSoundVolume() {
   volume = volumeSlider->slider->getValue();
   #if JUCE_LINUX
-     StringArray cmd{ "amixer","sset","Power Amplifier",(String(volume)+"%").toRawUTF8()};
+     StringArray cmd{ "amixer","sset","PCM",(String(volume)+"%").toRawUTF8()};
      if( child.start(cmd ) ) {
        String result{child.readAllProcessOutput()};
      }
