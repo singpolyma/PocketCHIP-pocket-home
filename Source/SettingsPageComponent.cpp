@@ -238,7 +238,7 @@ SettingsPageComponent::SettingsPageComponent(LauncherComponent* lc) {
   
   #if JUCE_LINUX
     // Get initial volume value
-    StringArray cmd{ "amixer","sget","Power Amplifier" };
+    StringArray cmd{ "amixer" };
     if(child.start(cmd)) {
       const String result (child.readAllProcessOutput());
       int resultIndex = result.indexOf("[")+1;
