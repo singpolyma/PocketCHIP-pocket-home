@@ -5,9 +5,57 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#if JUCE_LINUX
+namespace xlib {
+  extern "C" {
+    #include <X11/Xlib.h>
+    #include <X11/Xatom.h>
+
+    void maximizeWindow(Window win) {
+      auto display = XOpenDisplay(NULL);
+
+      XEvent ev;
+      ev.xclient.window = win;
+      ev.xclient.type = ClientMessage;
+      ev.xclient.format = 32;
+      ev.xclient.message_type = XInternAtom(display, "_NET_WM_STATE", False);
+      ev.xclient.data.l[0] = 1;
+      ev.xclient.data.l[1] = XInternAtom(display, "_NET_WM_STATE_MAXIMIZED_HORZ", False);
+      ev.xclient.data.l[2] = XInternAtom(display, "_NET_WM_STATE_MAXIMIZED_VERT", False);
+      ev.xclient.data.l[3] = 1;
+
+      XSendEvent(display, DefaultRootWindow(display), False, SubstructureRedirectMask | SubstructureNotifyMask, &ev);
+      XCloseDisplay(display);
+    }
+
+    struct MotifWmHints {
+        unsigned long flags;
+        unsigned long functions;
+        unsigned long decorations;
+        long input_mode;
+        unsigned long status;
+    };
+
+    void removeWindowDecorations(Window wndH) {
+      auto display = XOpenDisplay(NULL);
+      Atom hints = XInternAtom(display, "_MOTIF_WM_HINTS", False);
+
+      if (hints != None) {
+        MotifWmHints motifHints;
+        zerostruct(motifHints);
+
+        motifHints.flags = 2; /* MWM_HINTS_DECORATIONS */
+        motifHints.decorations = 0;
+
+        XChangeProperty(display, wndH, hints, hints, 32, PropModeReplace, (const unsigned char*)&motifHints, 4);
+        XCloseDisplay(display);
+      }
+    }
+  }
+}
+
 // FIXME: this is a hack to fix touch screen presses causing buzzing
 // when no application holds alsa open
-#if JUCE_LINUX
 #include <alsa/asoundlib.h>
 
 #define DEFAULT_BUFFER_SIZE	4096	/*in samples*/
@@ -250,9 +298,17 @@ PokeLaunchApplication::MainWindow::MainWindow(String name, const var &configJson
   setContentOwned(new MainContentComponent(configJson), true);
   centreWithSize(getWidth(), getHeight());
 
-  // Try to show over the full screen. YMMV
-  setFullScreen(true);
-  Desktop::getInstance().setKioskModeComponent(getTopLevelComponent(), false);
+  bool fullscreen = configJson.getProperty("fullscreen", true);
+  if(fullscreen) {
+    // Try to show over the full screen. YMMV
+    setFullScreen(true);
+    Desktop::getInstance().setKioskModeComponent(getTopLevelComponent(), false);
+  } else {
+#if JUCE_LINUX
+    xlib::removeWindowDecorations((xlib::Window)getWindowHandle());
+    xlib::maximizeWindow((xlib::Window)getWindowHandle());
+#endif
+  }
   setVisible(true);
 }
 
